@@ -9,21 +9,21 @@ var bgImage = new Image();
 bgImage.onload = function () {
 	bgReady = true;
 };
-bgImage.src = "http://digital-art-gallery.com/oid/50/640x548_9637_Battle_Background_Field_2d_landscape_game_art_forest_trees_picture_image_digital_art.jpg";
+bgImage.src = "img/background.jpg";
 
 var heroReady = false;
 var heroImage = new Image();
 heroImage.onload = function () {
 	heroReady = true;
 };
-heroImage.src = "http://www.adiumxtras.com/images/pictures/wow_dwarven_warrior_dock_icons_331063_img_1245.png";
+heroImage.src = "img/dwarf-right.png";
 
 var monsterReady = false;
 var monsterImage = new Image();
 monsterImage.onload = function () {
 	monsterReady = true;
 };
-monsterImage.src = "http://images3.wikia.nocookie.net/__cb20121011204428/farmville2/images/6/69/White_Sheep.png";
+monsterImage.src = "img/sheep.png";
 
 
 
@@ -32,7 +32,7 @@ var fireImage = new Image();
 fireImage.onload = function () {
 	fireReady = true;
 };
-fireImage.src = "http://img.oac-head.com/oac/img/items/icon_weapon_ge_axe_0004_golden.png";
+fireImage.src = "img/axe.png";
 
 var fire = {};
 
@@ -55,6 +55,13 @@ addEventListener("keyup", function (e) {
 
 
 var reset = function () {
+
+	moveLeft = true;
+	moveUp = true;
+	moveDown = true;
+ 	moveRight = true;
+ 	fireNow = false;
+
 	hero.x = canvas.width / 2;
 	hero.y = canvas.height / 2;
 
@@ -114,10 +121,12 @@ var update = function (modifier) {
 	if (37 in keysDown && moveLeft) {
 		hero.x -= hero.speed * modifier;
 		moveRight = true;
+		heroImage.src = "img/dwarf-left.png";
 	}
 	if (39 in keysDown && moveRight) {
 		hero.x += hero.speed * modifier;
 		moveLeft = true;
+		heroImage.src = "img/dwarf-right.png";
 	}
 
 	if (32 in keysDown) {
