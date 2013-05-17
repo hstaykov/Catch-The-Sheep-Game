@@ -2,9 +2,19 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="styles.css" media="screen" />
+		<script src="https://cdn.firebase.com/v0/firebase.js"></script>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<link rel="SHORTCUT ICON" href="img/icon.png">
 		<title>Kill the sheep...</title>
 	</head>
 	<body>
+		<input type="text" id="nameForm" style="position:absolute;left:156px;top:100px;width:200px;" autofocus placeholder="Your name" value="Riceto"/>
+		<table id="results" style="position:absolute;left:156px;top:200px;width:220px;" class="imagetable">
+		<tr><th>Name</th><th>Score</th></tr>
+		</table>
+		<script src="score.js"></script>
 		<script src="logic.js"></script>
+
 	</body>
 </html>

@@ -4,6 +4,26 @@ canvas.width = 512;
 canvas.height = 480;
 document.body.appendChild(canvas);
 
+
+var url = "https://killthesheep.firebaseio.com/";
+var firebaseRef = new Firebase(url);
+
+var playerName = "";
+var startGame = false;
+   firebaseRef.on("value", function(snap) {
+   	var obj = (JSON.stringify(snap.val()));
+   	$("#result").append(obj);
+});
+$("#nameForm").keyup(function (e) {
+    if (e.keyCode == 13) {
+     playerName = document.getElementById("nameForm").value;
+     $("#nameForm").remove();
+     $("#results").remove();
+     startGame = true;
+    }
+});
+
+
 var bgReady = false;
 var bgImage = new Image();
 bgImage.onload = function () {
@@ -37,7 +57,8 @@ fireImage.src = "img/axe.png";
 var fire = {};
 
 var hero = {
-	speed: 256 
+	speed: 256,
+	position: "right" 
 };
 var monster = {};
 var monstersCaught = 0;
@@ -65,7 +86,7 @@ var reset = function () {
 	hero.x = canvas.width / 2;
 	hero.y = canvas.height / 2;
 
-	fire.x = 0;
+	fire.x = hero.x;
 	fire.y = canvas.height; 
 
 	monster.x = 32 + (Math.random() * (canvas.width - 128));
@@ -77,10 +98,14 @@ var reset = function () {
 var fireWeapon = function(mod, heroX, heroY) {
 	fire.y = heroY;
 
-	fire.x += (heroX + 1000) * mod;
-	if (fire.x >= canvas.width)
+	if (hero.position == "right")
+		fire.x += (heroX + 1000) * mod;
+	else if (hero.position == "left")
+		fire.x -= (heroX + 1000) * mod;
+	
+	if (fire.x >= canvas.width || fire.x <= 0 )
 	{
-		fire.x = 0;
+		fire.x = hero.x;
 		fire.y = canvas.height;
 		fireNow = false;
 	}
@@ -122,11 +147,13 @@ var update = function (modifier) {
 		hero.x -= hero.speed * modifier;
 		moveRight = true;
 		heroImage.src = "img/dwarf-left.png";
+		hero.position = "left";
 	}
 	if (39 in keysDown && moveRight) {
 		hero.x += hero.speed * modifier;
 		moveLeft = true;
 		heroImage.src = "img/dwarf-right.png";
+		hero.position = "right";
 	}
 
 	if (32 in keysDown) {
@@ -140,6 +167,8 @@ var update = function (modifier) {
 		&& monster.y <= (hero.y + 64)
 	) {
 		++monstersCaught;
+		var userScoreRef = firebaseRef.child(playerName);
+		userScoreRef.setWithPriority({ name:playerName, score:monstersCaught }, monstersCaught);
 		reset();		
 	}
 
@@ -158,15 +187,16 @@ var render = function () {
 		ctx.drawImage(bgImage, 0, 0);
 	}
 
-	if (heroReady) {
+
+	if (heroReady && startGame) {
 		ctx.drawImage(heroImage, hero.x, hero.y);
 	}
 
-	if (monsterReady) {
+	if (monsterReady && startGame) {
 		ctx.drawImage(monsterImage, monster.x, monster.y);
 	}
 
-	if (fireReady) {
+	if (fireReady && startGame) {
 		ctx.drawImage(fireImage, fire.x, fire.y);
 	}
 
@@ -174,7 +204,7 @@ var render = function () {
 	ctx.font = "24px Helvetica";
 	ctx.textAlign = "left";
 	ctx.textBaseline = "top";
-	ctx.fillText("Sheeps killed: " + monstersCaught, 132, 32);
+	ctx.fillText( playerName + " killed " + monstersCaught + " sheeps", 132, 32);
 
 	ctx.fillStyle = "rgb(250, 250, 250)";
 	ctx.font = "12px Helvetica";
@@ -209,6 +239,7 @@ var main = function () {
 	render();
 
 	then = now;
+
 };
 
 reset();
