@@ -18,6 +18,26 @@
 
 }
 
+#score
+{
+	background-color: #FFB84D;
+    /*border:solid 1px #BFBDBD;*/
+    color: #FF0000;
+    height: 28px;
+    padding-left:10px;
+    width: 250px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 15px;
+ 	font-family:"Lucida Console", Monaco, monospace;
+	box-shadow: 2px 2px 0 #828181 inset;
+	border:1px solid #fafafa;
+ 	-webkit-box-shadow:0 0 36px #007eff;
+ 	-moz-box-shadow:0 0 35px #007eff;
+ 	bo5x-shadow:0 0 35px #007eff;
+ 	opacity:0.4;
+}
+
 table.imagetable {
 	font-family: verdana,arial,sans-serif;
 	font-size:11px;
@@ -25,7 +45,7 @@ table.imagetable {
 	border-width: 1px;
 	border-color: #999999;
 	border-collapse: collapse;
-	
+
 }
 table.imagetable th {
 	background:#FFB84D;
