@@ -111,10 +111,12 @@ addEventListener("keyup", function (e) {
 
 var resetGame = function(){
 
-	$("#score").fadeOut("fast");
+	// $("#score").fadeOut("fast");
 
-	$("#score").fadeIn(1500);
-	$("#score").text("Game over! Sheeps: " + monstersCaught);
+	// $("#score").fadeIn(1500);
+	// $("#score").text("Game over! Sheeps: " + monstersCaught);
+
+
 
 	$("#nameForm").fadeIn(1500);
     $("#results").fadeIn(1500);
@@ -125,6 +127,7 @@ var resetGame = function(){
 
 	troll.health = 2;
 	troll.speed = 64;
+	trollHealthBarImage.src = "img/fullHealth.png";
 
 	monstersCaught = 0;
 	
@@ -394,9 +397,10 @@ var render = function () {
 
 
 
-	if (startGame)
-	$("#score").text("Sheeps killed: " + monstersCaught);
-	
+	if (startGame){
+	$("#sheepsKilled").text(monstersCaught);
+	$("#ammoLeft").text(axes);
+	}
 
 	
 	ctx.fillStyle = "rgb(250, 250, 250)";
@@ -410,12 +414,6 @@ var render = function () {
 	ctx.textAlign = "right";
 	ctx.textBaseline = "bottom";
 	ctx.fillText("Y: " + hero.y.toFixed(2) , 480, 430);
-
-	ctx.fillStyle = "rgb(250, 250, 250)";
-	ctx.font = "12px Helvetica";
-	ctx.textAlign = "right";
-	ctx.textBaseline = "bottom";
-	ctx.fillText("Axes: " + axes.toFixed(2) , 480, 450);
 
 	ctx.fillStyle = "rgb(250, 250, 250)";
 	ctx.font = "12px Helvetica";

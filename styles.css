@@ -2,7 +2,7 @@
 {
 	background-color: #FFB84D;
     border:solid 1px #BFBDBD;
-    color: #FF0000;
+    /*color: #FF0000;*/
     height: 28px;
     padding-left:10px;
     width: 191px;
@@ -23,7 +23,7 @@
 	background-color: #FFB84D;
     /*border:solid 1px #BFBDBD;*/
     color: #FF0000;
-    height: 28px;
+    height: 70px;
     padding-left:10px;
     width: 250px;
     text-align: center;
@@ -35,7 +35,8 @@
  	-webkit-box-shadow:0 0 36px #007eff;
  	-moz-box-shadow:0 0 35px #007eff;
  	bo5x-shadow:0 0 35px #007eff;
- 	opacity:0.4;
+ 	opacity:0.8;
+ 	background-image:url('img/status.jpg');
 }
 
 table.imagetable {
