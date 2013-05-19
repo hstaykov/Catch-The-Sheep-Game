@@ -49,6 +49,13 @@ fireImage.onload = function () {
 };
 fireImage.src = "img/axe.png";
 
+var аmmoReady = false;
+var ammoImage = new Image();
+ammoImage.onload = function () {
+	аmmoReady = true;
+};
+ammoImage.src = "img/ammo.png";
+
 
 var trollReady = false;
 var trollImage = new Image();
@@ -76,7 +83,9 @@ var trollHealthBar = {
 	y: troll.y + 20
 }
 
+var ammo ={
 
+}
 
 var fire = {};
 
@@ -114,7 +123,8 @@ var resetGame = function(){
 
 	axes = 50;
 
-	troll.health = 3;
+	troll.health = 2;
+	troll.speed = 64;
 
 	monstersCaught = 0;
 	
@@ -147,8 +157,17 @@ var deployTroll = function(){
 	}
 }
 
-var reset = function () {
+var deployAmmo = function() {
+	аmmoReady = true;
 
+	console.log("deployng ammo");
+	ammo.x = 52 + (Math.random() * (canvas.width - 128));
+	ammo.y = 102 + (Math.random() * (canvas.height - 256));
+	
+}	
+
+var reset = function () {
+	
 	moveLeft = true;
 	moveUp = true;
 	moveDown = true;
@@ -298,6 +317,7 @@ var update = function (modifier) {
 		fireNow = true;
 	}	
 
+	//Checking for sheep collision
 	if (
 		hero.x <= (monster.x + 64)
 		&& monster.x <= (hero.x + 64)
@@ -308,6 +328,7 @@ var update = function (modifier) {
 		reset();		
 	}
 
+	// Checking for troll collision
 	if (
 		hero.x <= (troll.x + 64)
 		&& troll.x <= (hero.x + 64)
@@ -317,6 +338,19 @@ var update = function (modifier) {
 		var userScoreRef = firebaseRef.child(playerName);
 		userScoreRef.setWithPriority({ name:playerName, score:monstersCaught, time:getCurrentTime() }, monstersCaught);
 		resetGame();		
+	}
+
+	// Checking for ammo collision
+	if (
+		hero.x <= (ammo.x + 84)
+		&& ammo.x <= (hero.x + 84)
+		&& hero.y <= (ammo.y + 84)
+		&& ammo.y <= (hero.y + 84)
+	) {
+		axes += 10;
+		ammo.x = 0;
+		ammo. y =0;
+		аmmoReady = false;
 	}
 
 	if (hero.x <= 0)
@@ -354,10 +388,17 @@ var render = function () {
 		ctx.drawImage(trollHealthBarImage, trollHealthBar.x, trollHealthBar.y);
 	}
 
+	if (аmmoReady && startGame) {
+		ctx.drawImage(ammoImage, ammo.x, ammo.y);
+	}
+
+
+
 	if (startGame)
 	$("#score").text("Sheeps killed: " + monstersCaught);
 	
 
+	
 	ctx.fillStyle = "rgb(250, 250, 250)";
 	ctx.font = "12px Helvetica";
 	ctx.textAlign = "right";
@@ -389,16 +430,18 @@ var main = function () {
 
 	if (startGame)
 	update(delta / 1000);
-
+	
 	render();
-
+	
 	then = now;
 
 };
 
 reset();
 var then = Date.now();
+setInterval(deployAmmo, 15000); 
 setInterval(main, 1); 
+
 
 var getCurrentTime = function(){
 	var currentDate = new Date();
@@ -415,3 +458,4 @@ var getCurrentTime = function(){
 	
 	return day + "/" + month + "/" + year + " " + hours + ":" + minutes;
 }
+
