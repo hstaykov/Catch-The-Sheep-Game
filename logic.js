@@ -112,6 +112,10 @@ var resetGame = function(){
 
 	startGame = false;
 
+	axes = 50;
+
+	troll.health = 3;
+
 	monstersCaught = 0;
 	
 	deployTroll();
@@ -140,7 +144,7 @@ var deployTroll = function(){
 			troll.x = 0;
 			troll.y = 0;
 			break;
-}
+	}
 }
 
 var reset = function () {
@@ -163,7 +167,7 @@ var reset = function () {
 
 var fireWeapon = function(mod, heroX, heroY) {
 	fire.y = heroY;
-	
+
 	if (hero.position == "right")
 		fire.x += (heroX + 1000) * mod;
 	else if (hero.position == "left")
@@ -174,6 +178,7 @@ var fireWeapon = function(mod, heroX, heroY) {
 		fire.x = hero.x;
 		fire.y = canvas.height;
 		fireNow = false;
+		axes--;
 	}
 
 	if (
@@ -183,7 +188,8 @@ var fireWeapon = function(mod, heroX, heroY) {
 		&& monster.y <= (fire.y + 64)
 	) {
 		++monstersCaught;
-		fireNow =false;
+		fireNow = false;
+		axes--;
 		reset();		
 	}
 
@@ -197,7 +203,8 @@ var fireWeapon = function(mod, heroX, heroY) {
 			trollHealthBarImage.src = "img/halflHealth.png";
 			--troll.health;
 			fire.x = hero.x;
-			fire.y = canvas.height; 
+			fire.y = canvas.height;
+			axes--; 
 			fireNow = false;
 		}
 		else if (troll.health == 1)
@@ -206,6 +213,7 @@ var fireWeapon = function(mod, heroX, heroY) {
 			--troll.health;
 			fire.x = hero.x;
 			fire.y = canvas.height;
+			axes--;
 			fireNow = false; 	
 		}
 		else if (troll.health == 0)
@@ -215,12 +223,10 @@ var fireWeapon = function(mod, heroX, heroY) {
 			deployTroll();
 			fire.x = hero.x;
 			fire.y = canvas.height;
+			axes--;
 			fireNow = false; 
 		}
 	}
-
-
-
 }
 
 
@@ -246,6 +252,7 @@ var calcGameLevel = function(){
 		++monstersCaught;
 	}
 }
+
 
 
 var moveLeft = true;
@@ -308,7 +315,7 @@ var update = function (modifier) {
 		&& troll.y <= (hero.y + 64)
 	) {
 		var userScoreRef = firebaseRef.child(playerName);
-		userScoreRef.setWithPriority({ name:playerName, score:monstersCaught }, monstersCaught);
+		userScoreRef.setWithPriority({ name:playerName, score:monstersCaught, time:getCurrentTime() }, monstersCaught);
 		resetGame();		
 	}
 
@@ -392,3 +399,19 @@ var main = function () {
 reset();
 var then = Date.now();
 setInterval(main, 1); 
+
+var getCurrentTime = function(){
+	var currentDate = new Date();
+	var day = currentDate.getDate();
+	var month = currentDate.getMonth() + 1;
+	var year = currentDate.getFullYear();
+
+	var currentTime = new Date();
+	var hours = currentTime.getHours();
+	var minutes = currentTime.getMinutes();
+
+	if (minutes < 10)
+	minutes = "0" + minutes;
+	
+	return day + "/" + month + "/" + year + " " + hours + ":" + minutes;
+}
