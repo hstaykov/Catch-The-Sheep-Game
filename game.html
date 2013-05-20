@@ -14,9 +14,19 @@
 		<div id="score" style="position:absolute;left:10px;top:10px;width:500;" align="center"></div>
 		<div id="sheepsKilled" style="position:absolute;left:205px;top:50px;" align="center"></div>
 		<div id="ammoLeft" style="position:absolute;left:205px;top:23px;" align="center"></div>
+		<div id="playerGold" style="position:absolute;left:100px;top:23px;" align="center"></div>
+		<div id="shop" style="position:absolute;left:80px;top:95px;" hidden>
+			
+			<img src="img/ammo.png" style="position:absolute;left:40px;top:45px;">
+			<div id="moreAmmoInfo"  style="position:absolute;left:20px;top:85px;">More axes <br>from barrels</div>
+			<div id="buttonMoreAmmo" onClick="addMoreAmmo()" class="shopButtonsDisabled" style="position:absolute;left:90px;top:45px;">Buy</div>
+			
+			<div id="buttonContinue" onClick="continueGame()" class="shopButtons" style="position:absolute;left:130px;top:245px;">Continue</div>
+
+		</div>
 		<input type="text" id="nameForm" style="position:absolute;left:156px;top:100px;width:200px;" autofocus placeholder="Your name" value="Riceto"/>
 		<table id="results" style="position:absolute;left:156px;top:200px;width:220px;" class="imagetable">
-		<tr><th>Name</th><th>Score</th></tr>
+		<tr><th>Name</th><th>Sheeps</th></tr>
 		</table>
 
 

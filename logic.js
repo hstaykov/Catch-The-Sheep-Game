@@ -2,8 +2,14 @@ var canvas = document.createElement("canvas");
 var ctx = canvas.getContext("2d");
 canvas.width = 512;
 canvas.height = 480;
+canvas.addEventListener("mousedown", doMouseDown, false);
 document.body.appendChild(canvas);
 var axes = 50;
+
+var playerGold = 0;
+
+var goldValue = 1;
+var barrelValue = 10;
 
 var userIp;
 
@@ -18,6 +24,7 @@ $("#nameForm").keyup(function (e) {
      playerName = document.getElementById("nameForm").value;
      $("#nameForm").hide();
      $("#results").hide();
+     $("#shop").hide();
      startGame = true;
     }
 });
@@ -77,6 +84,15 @@ trollHealthBarImage.onload = function () {
 };
 trollHealthBarImage.src = "img/fullHealth.png";
 
+
+var goldReady = false;
+var goldImage = new Image();
+goldImage.onLoad = function(){
+	goldReady = true;
+}
+goldImage.src = "img/gold.png";
+
+
 var troll = {
 	speed: 64,
 	x: canvas.width,
@@ -90,6 +106,10 @@ var trollHealthBar = {
 }
 
 var ammo ={
+
+}
+
+var gold = {
 
 }
 
@@ -175,6 +195,18 @@ var deployAmmo = function() {
 	}
 }	
 
+
+var deployGold = function(trollX, trollY) {
+	if (startGame){
+	goldReady = true;
+	gold.x = trollX;
+	if (trollY < 80)
+		gold.y = trollY + 40;
+	else
+		gold.y = trollY;
+	}
+}	
+
 var reset = function () {
 	
 	moveLeft = true;
@@ -246,6 +278,7 @@ var fireWeapon = function(mod, heroX, heroY) {
 		}
 		else if (troll.health == 0)
 		{
+			deployGold(troll.x, troll.y);
 			trollHealthBarImage.src = "img/fullHealth.png";
 			troll.health = 2;
 			deployTroll();
@@ -276,6 +309,15 @@ var movingTroll = function (mod){
 var calcGameLevel = function(){
 	if (monstersCaught%10 == 9)
 	{
+		startGame = false;
+		goldValue++;
+		$("#shop").show();
+		if(playerGold >=10){
+			$("#buttonMoreAmmo").attr('class', 'shopButtons');
+		}
+		else{
+			$("#buttonMoreAmmo").attr('class', 'shopButtonsDisabled');	
+		}
 		troll.speed += 10;
 		++monstersCaught;
 	}
@@ -356,10 +398,23 @@ var update = function (modifier) {
 		&& hero.y <= (ammo.y + 32)
 		&& ammo.y <= (hero.y + 100)
 	) {
-		axes += 10;
+		axes += barrelValue;
 		ammo.x = 0;
 		ammo.y = 0;
 		аmmoReady = false;
+	}
+
+	// Checking for gold collision
+	if (
+		hero.x <= (gold.x + 64)
+		&& gold.x <= (hero.x + 64)
+		&& hero.y <= (gold.y + 32)
+		&& gold.y <= (hero.y + 100)
+	) {
+		playerGold+=goldValue;
+		gold.x = 0;
+		gold.y = 0;
+		goldReady = false;
 	}
 
 	if (hero.x <= 0)
@@ -401,11 +456,16 @@ var render = function () {
 		ctx.drawImage(ammoImage, ammo.x, ammo.y);
 	}
 
+	if (goldReady && startGame) {
+		ctx.drawImage(goldImage, gold.x, gold.y);
+	}
+
 
 
 	if (startGame){
-	$("#sheepsKilled").text(monstersCaught);
-	$("#ammoLeft").text(axes);
+		$("#sheepsKilled").text(monstersCaught);
+		$("#ammoLeft").text(axes);
+		$("#playerGold").text(playerGold);
 	}
 
 	
@@ -463,11 +523,23 @@ var getCurrentTime = function(){
 	
 	return day + "/" + month + "/" + year + " " + hours + ":" + minutes;
 }
-	
 
+var mouseClickCoord = {}
 
-    // function getip(json){
-    //   alert(json.ip); 
-    // }
+ function doMouseDown(event) {
+ 	mouseClickCoord.x = event.pageX;
+ 	mouseClickCoord.y = event.pageY; 
+	console.log(mouseClickCoord.x, mouseClickCoord.y);
+}
 
-// <script type="application/javascript" src="http://jsonip.appspot.com/?callback=getip"></script>
+function continueGame(){
+	$("#shop").hide();
+	startGame = true;
+}
+
+function addMoreAmmo(){
+	if (playerGold >= 10){
+		barrelValue+=10;
+		playerGold-=10;
+	}
+}
