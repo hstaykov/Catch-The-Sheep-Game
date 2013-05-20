@@ -5,6 +5,8 @@ canvas.height = 480;
 document.body.appendChild(canvas);
 var axes = 50;
 
+var userIp;
+
 var url = "https://killthesheep.firebaseio.com/";
 var firebaseRef = new Firebase(url);
 
@@ -20,6 +22,10 @@ $("#nameForm").keyup(function (e) {
     }
 });
 
+
+$.get("http://jsonip.appspot.com", function(data){
+			userIp = data.ip;
+	});
 
 var bgReady = false;
 var bgImage = new Image();
@@ -161,12 +167,12 @@ var deployTroll = function(){
 }
 
 var deployAmmo = function() {
+	if (startGame){
 	аmmoReady = true;
-
-	console.log("deployng ammo");
+	console.log("Ammo");
 	ammo.x = 52 + (Math.random() * (canvas.width - 128));
 	ammo.y = 102 + (Math.random() * (canvas.height - 256));
-	
+	}
 }	
 
 var reset = function () {
@@ -339,20 +345,20 @@ var update = function (modifier) {
 		&& troll.y <= (hero.y + 64)
 	) {
 		var userScoreRef = firebaseRef.child(playerName);
-		userScoreRef.setWithPriority({ name:playerName, score:monstersCaught, time:getCurrentTime() }, monstersCaught);
+		userScoreRef.setWithPriority({ name:playerName, score:monstersCaught, time:getCurrentTime(), ip: userIp }, monstersCaught);
 		resetGame();		
 	}
 
 	// Checking for ammo collision
 	if (
-		hero.x <= (ammo.x + 84)
-		&& ammo.x <= (hero.x + 84)
-		&& hero.y <= (ammo.y + 84)
-		&& ammo.y <= (hero.y + 84)
+		hero.x <= (ammo.x + 64)
+		&& ammo.x <= (hero.x + 64)
+		&& hero.y <= (ammo.y + 32)
+		&& ammo.y <= (hero.y + 100)
 	) {
 		axes += 10;
 		ammo.x = 0;
-		ammo. y =0;
+		ammo.y = 0;
 		аmmoReady = false;
 	}
 
@@ -437,6 +443,7 @@ var main = function () {
 
 reset();
 var then = Date.now();
+
 setInterval(deployAmmo, 15000); 
 setInterval(main, 1); 
 
@@ -456,4 +463,11 @@ var getCurrentTime = function(){
 	
 	return day + "/" + month + "/" + year + " " + hours + ":" + minutes;
 }
+	
 
+
+    // function getip(json){
+    //   alert(json.ip); 
+    // }
+
+// <script type="application/javascript" src="http://jsonip.appspot.com/?callback=getip"></script>
