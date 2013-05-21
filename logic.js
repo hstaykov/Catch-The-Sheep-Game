@@ -137,11 +137,10 @@ addEventListener("keyup", function (e) {
 
 var resetGame = function(){
 
-	// $("#score").fadeOut("fast");
 
-	// $("#score").fadeIn(1500);
-	// $("#score").text("Game over! Sheeps: " + monstersCaught);
-
+    playerGold = 0;
+    goldValue = 1;
+	barrelValue = 10;
 
 
 	$("#nameForm").fadeIn(1500);
