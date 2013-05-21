@@ -1,38 +1,29 @@
+//Default values
+
+var initAxes = 50;
+var initPlayerGold = 0;
+var initGoldValue = 1;
+var initBarrelValue = 10;
+var initTrollSpeed = 64;
+var initTrollHealth = 2;
+
+// Starting values
+var axes = initAxes;
+var playerGold = initPlayerGold;
+var barrelValue = initBarrelValue;
+var goldValue = initGoldValue;
+var playerName = "";
+var startGame = false;
+var userIp;
+var monstersCaught = 0;
+var url = "https://killthesheep.firebaseio.com/";
+var firebaseRef = new Firebase(url);
 var canvas = document.createElement("canvas");
 var ctx = canvas.getContext("2d");
 canvas.width = 512;
 canvas.height = 480;
 canvas.addEventListener("mousedown", doMouseDown, false);
 document.body.appendChild(canvas);
-var axes = 50;
-
-var playerGold = 0;
-
-var goldValue = 1;
-var barrelValue = 10;
-
-var userIp;
-
-var url = "https://killthesheep.firebaseio.com/";
-var firebaseRef = new Firebase(url);
-
-var playerName = "";
-var startGame = false;
-
-$("#nameForm").keyup(function (e) {
-    if (e.keyCode == 13) {
-     playerName = document.getElementById("nameForm").value;
-     $("#nameForm").hide();
-     $("#results").hide();
-     $("#shop").hide();
-     startGame = true;
-    }
-});
-
-
-$.get("http://jsonip.appspot.com", function(data){
-			userIp = data.ip;
-	});
 
 var bgReady = false;
 var bgImage = new Image();
@@ -69,7 +60,6 @@ ammoImage.onload = function () {
 };
 ammoImage.src = "img/ammo.png";
 
-
 var trollReady = false;
 var trollImage = new Image();
 trollImage.onload = function () {
@@ -84,7 +74,6 @@ trollHealthBarImage.onload = function () {
 };
 trollHealthBarImage.src = "img/fullHealth.png";
 
-
 var goldReady = false;
 var goldImage = new Image();
 goldImage.onLoad = function(){
@@ -94,10 +83,10 @@ goldImage.src = "img/gold.png";
 
 
 var troll = {
-	speed: 64,
+	speed: initTrollSpeed,
 	x: canvas.width,
 	y: canvas.height,
-	health: 2
+	health: initTrollHealth
 };
 
 var trollHealthBar = {
@@ -105,7 +94,7 @@ var trollHealthBar = {
 	y: troll.y + 20
 }
 
-var ammo ={
+var ammo = {
 
 }
 
@@ -113,7 +102,9 @@ var gold = {
 
 }
 
-var fire = {};
+var fire = {
+
+}
 
 var hero = {
 	speed: 256,
@@ -121,10 +112,14 @@ var hero = {
 	x: canvas.width / 2,
 	y: canvas.height / 2 
 };
-var monster = {};
-var monstersCaught = 0;
+var monster = {
 
-var keysDown = {};
+}
+
+
+var keysDown = {
+
+}
 
 addEventListener("keydown", function (e) {
 	keysDown[e.keyCode] = true;
@@ -135,26 +130,44 @@ addEventListener("keyup", function (e) {
 }, false);
 
 
+
+$("#nameForm").keyup(function (e) {
+    if (e.keyCode == 13) {
+     playerName = document.getElementById("nameForm").value;
+     $("#nameForm").hide();
+     $("#results").hide();
+     $("#shop").hide();
+     startGame = true;
+    }
+});
+
+
+
+//Getting the user IP 
+$.get("http://jsonip.appspot.com", function(data){
+			userIp = data.ip;
+	});
+
+
 var resetGame = function(){
 
+	startGame = false;
 
-    playerGold = 0;
-    goldValue = 1;
-	barrelValue = 10;
-
+    playerGold = initPlayerGold;
+    goldValue = initGoldValue;
+	barrelValue = initBarrelValue;
+	axes = initAxes;
+	troll.health = initTrollSpeed;
+	troll.speed = initTrollHealth;
+	trollHealthBarImage.src = "img/fullHealth.png";
+	monstersCaught = 0;
 
 	$("#nameForm").fadeIn(1500);
     $("#results").fadeIn(1500);
 
-	startGame = false;
+	
 
-	axes = 50;
-
-	troll.health = 2;
-	troll.speed = 64;
-	trollHealthBarImage.src = "img/fullHealth.png";
-
-	monstersCaught = 0;
+	
 	
 	deployTroll();
 
@@ -206,13 +219,8 @@ var deployGold = function(trollX, trollY) {
 	}
 }	
 
-var reset = function () {
+var deploySheep = function () {
 	
-	moveLeft = true;
-	moveUp = true;
-	moveDown = true;
- 	moveRight = true;
- 	fireNow = false;
 
 	fire.x = hero.x;
 	fire.y = canvas.height; 
@@ -249,7 +257,7 @@ var fireWeapon = function(mod, heroX, heroY) {
 		++monstersCaught;
 		fireNow = false;
 		axes--;
-		reset();		
+		deploySheep();		
 	}
 
 	if (
@@ -375,7 +383,7 @@ var update = function (modifier) {
 		&& monster.y <= (hero.y + 64)
 	) {
 		++monstersCaught;
-		reset();		
+		deploySheep();		
 	}
 
 	// Checking for troll collision
@@ -500,7 +508,7 @@ var main = function () {
 
 };
 
-reset();
+deploySheep();
 var then = Date.now();
 
 setInterval(deployAmmo, 15000); 
